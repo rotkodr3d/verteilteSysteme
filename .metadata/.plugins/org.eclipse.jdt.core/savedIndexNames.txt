@@ -1,0 +1,23 @@
+INDEX VERSION 1.130+C:\Users\Chris\Desktop\verteilte Systeme\.metadata\.plugins\org.eclipse.jdt.core
+4274237055.index
+3261179670.index
+1039855981.index
+1358049608.index
+128816234.index
+3807279936.index
+1548200603.index
+2661381517.index
+2067893749.index
+129033162.index
+4182530004.index
+932177209.index
+680429552.index
+2607506073.index
+1535889436.index
+166776846.index
+1269183262.index
+1368552266.index
+2652778527.index
+3059158756.index
+1942962295.index
+2388919603.index
