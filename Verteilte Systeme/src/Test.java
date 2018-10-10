@@ -1,4 +1,9 @@
 
 public class Test {
-	public Test() {System.out.println("TEST!");}
+	
+	private String id;
+	
+	public Test() {
+		System.out.println("TEST!");
+	}
 }
