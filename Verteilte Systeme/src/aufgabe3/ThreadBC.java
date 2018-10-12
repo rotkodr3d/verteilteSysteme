@@ -6,7 +6,14 @@ public class ThreadBC extends Thread {
 	private static long result;
 	
 	public static void main(String[] args) {
-		ThreadBC t = new ThreadBC(20,5);
+		int nIn = Integer.parseInt(args[0]); 
+		int kIn = Integer.parseInt(args[1]);
+		
+		if (nIn <= 0 || nIn >= 21) {
+			System.out.println("Ungültiger Wert für n! \nFür n ist nur dieser Bereich erlaubt: 0 < n < 21");
+			System.exit(1);
+		}	
+		ThreadBC t = new ThreadBC(nIn,kIn);
 		try {
 			t.join();
 		} catch (InterruptedException e) {
