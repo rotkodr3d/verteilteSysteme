@@ -45,8 +45,7 @@ public class ThreadBC extends Thread {
 				t2.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			}
-        	
+			}    	
         }
 	}
 }
