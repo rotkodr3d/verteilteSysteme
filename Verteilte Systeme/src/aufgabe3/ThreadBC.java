@@ -1,9 +1,13 @@
 package aufgabe3;
 
+import aufgabe1.Semaphore;
+
 public class ThreadBC extends Thread {
 	private int n;
 	private int k;
 	private static long result;
+	
+	Semaphore sem = new Semaphore(0);
 	
 	public static void main(String[] args) {
 		int nIn = Integer.parseInt(args[0]); 
@@ -35,9 +39,20 @@ public class ThreadBC extends Thread {
 	@Override
 	public void run() {	
 		if ((n == k) || (k == 0)) {
+			//sem.p();
             result += 1;
+            //sem.v();
 		}
+		else if (k == 1 || k == n-1) {
+			//sem.p();
+			result += n;
+			//sem.v();
+		}
+		
         else {
+        	if (k > n/2) {
+        		k = n-k;
+        	}
         	ThreadBC t1 = new ThreadBC(n - 1, k - 1);
         	ThreadBC t2 = new ThreadBC(n - 1, k);
         	try {
