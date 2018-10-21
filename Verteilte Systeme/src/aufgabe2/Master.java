@@ -26,58 +26,114 @@ public class Master {
 	private int m = mat_b[0].length;
 	
 	private int [][] mat_c = new int[n][m];
+	private int numberThreads = 25;
+	
+	private int mode = 0; //0 = Master-Worker; 1 = Parallelismus
 	
 	private List<Worker> workers = new ArrayList<>(); 
 	private Stack<Work> work = new Stack<>();
 	
 	
-	public static void main(String[] args) {
-		master = new Master();
-		master.Manage();
+	public Work tellResultGetWork(MatrixElement me) {
+		int row = me.getRow();
+		int col = me.getCol();
+		mat_c[row][col] = me.getValue();
+		return getWork();
 	}
 	
 	public void tellResult(MatrixElement me) {
 		int row = me.getRow();
 		int col = me.getCol();
-		mat_c[row][col] = mat_c[row][col] + me.getValue();
+		mat_c[row][col] = me.getValue();	
+	}
+	
+	public Work getWork() {
+		if (!work.isEmpty())
+			return work.pop();
+		else
+			return null;
+	}
+	
+	public int[] getColumn(int[][] matrix, int column) {
+		int[] r_matrix = new int[matrix.length];
+		for (int i = 0; i < matrix.length; i++) {
+			r_matrix[i] = matrix[i][column];
+		}
+		return r_matrix;
+	}
+	
+	public Master(int mode, int threads) {
+		numberThreads = threads; 
+		createWork();
+		mode = (mode != 0 && mode != 1) ? 0 : mode;
+		switch(mode) {
+		
+		case 0:
+			createStartWorker();
+			waitAndPrintResult(); 
+			break;
+		
+		case 1:
+			manageParallel();
+			waitAndPrintResult(); 
+			break;
+		}
 	}
 	
 	public Master() {}
 	
-	public void Manage() {
-		for(int i = 0; i < mat_c.length; i++) { //Iteration über Zeilen in Matrix C
-			for(int k = 0; k < mat_c.length; k++) { //Iteration über Spalten in Matrix C
-				for(int j = 0; j < mat_b.length; j++) { //Iteration über Zeilen von A/Spalten von B
-					work.add(new Work(mat_a[i][j],mat_b[j][k],i,k));
-				}
+	public void manageParallel() {
+		int workPerThread = Math.floorDiv(work.size(),numberThreads);
+		int restWork = (work.size()%numberThreads);
+		createStartWorker(workPerThread,restWork);
+		System.out.println(workPerThread + " " + restWork + " " + work.size());
+	}
+	
+	public void createWork() {
+		for (int i = 0; i < mat_c.length; i++) {
+			for (int j = 0; j < mat_c[0].length; j++) {
+				work.add(new Work(mat_a[i],getColumn(mat_b,j),i,j));			
 			}
 		}
-		
-		for (int amount = 0; amount < 25; amount++) {
-			Worker w = new Worker(work.pop(),master);
-			w.start();
-			workers.add(w);
-		}
-		
-		
-		while(!workers.isEmpty()) {
-			for(int i = 0; i < workers.size(); i++) {
-				Worker worker = workers.get(i);
-				try {
-					worker.join();
-					if (!work.isEmpty()) {
-						Worker w = new Worker(work.pop(),master);
-						w.start();
-						workers.add(w);
-					}
-					workers.remove(i);
-					System.out.println(workers.size());//worker.getState()+" "+worker.getName());
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+	}
+	
+	public void createStartWorker(int workPerThread, int restWork) {	
+		int rest = restWork;
+		for (int amount = 0; amount < numberThreads; amount++) {
+			if (!work.isEmpty()) {
+				Worker w; 
+				if (rest != 0) {
+					w = new Worker(work.pop(),this,workPerThread+1);
+					rest--;
 				}
+				else
+					w = new Worker(work.pop(),this,workPerThread);
+				w.start();
+				workers.add(w);
 			}
 		}
-		
+	}
+	
+	public void createStartWorker() {	
+
+		for (int amount = 0; amount < numberThreads; amount++) {
+			if (!work.isEmpty()) {
+				Worker w = new Worker(work.pop(),this);
+				w.start();
+				workers.add(w);
+			}
+		}
+	}
+	
+	public void waitAndPrintResult() {
+		for(Worker worker : workers) {
+			try {
+				worker.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
 		for (int i = 0; i < mat_c.length; i++) {
 			System.out.print("[");
 			for(int j = 0; j < mat_c[i].length; j++) {
@@ -86,5 +142,4 @@ public class Master {
 			System.out.printf("%4s","]\n");
 		}
 	}
-
 }

@@ -5,21 +5,24 @@ import javafx.util.Pair;
 
 public class Worker extends Thread{
 	
-	int a;
-	int b;
-	Work work;
-	static Semaphore sem = new Semaphore(1);
-	static Master master;
+	private Work work;
+	private static Semaphore sem = new Semaphore(1);
+	private static Master master;
+	private int work_limit = 0;
+	private int work_done = 0;
+	private boolean hasLimit = false;
 	
 	public Worker(Master master) {
 		if (Worker.master == null)
 			Worker.master = master;	
 	}
 	
-	public Worker(int a, int b, Master master) {
-		this.a = a;
-		this.b = b;
-		Worker.master = master == null ? master: Worker.master;
+	public Worker(Work work, Master master, int work_limit) {
+		this.work_limit = work_limit;
+		this.work = work;
+		hasLimit = true;
+		if (Worker.master == null)
+			Worker.master = master;	
 	}
 	
 	public Worker(Work work, Master master) {
@@ -28,20 +31,29 @@ public class Worker extends Thread{
 			Worker.master = master;	
 	}
 	
-	public void addWork(Work work) {
-		this.work = work;
-	}
 	
 	@Override
 	public void run() {
-		calcTellResult();
+		while(work != null) {
+			calcTellResult();
+		}
 	}
 	
 	public void calcTellResult() {
-		Pair<Integer,Integer> p = work.getWork();
-		int result = p.getKey()*p.getValue();
-		sem.p();
-		master.tellResult(new MatrixElement(result,work.rowC,work.colC));
+		Pair<int[],int[]> p = work.getWork();
+		int result = 0;
+		for(int i = 0; i < p.getKey().length; i++) {
+			result += p.getKey()[i]*p.getValue()[i];
+		}
+		if (hasLimit)
+			work_done++;
+		sem.p();	
+		if (work_done <= work_limit)
+			work = master.tellResultGetWork(new MatrixElement(result,work.rowC,work.colC));
+		else if (work_done >= work_limit) {
+			master.tellResult(new MatrixElement(result,work.rowC,work.colC));
+			work = null;
+		}
 		sem.v();
 	}
 }
