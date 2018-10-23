@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import javax.swing.plaf.synth.SynthSpinnerUI;
+
 public class Master {
 	static Master master;
 	private int[][] mat_a = {
@@ -33,6 +35,14 @@ public class Master {
 	private List<Worker> workers = new ArrayList<>(); 
 	private Stack<Work> work = new Stack<>();
 	
+	
+	public void tellResult(Stack<MatrixElement> mes) {
+		for (MatrixElement m : mes) {
+			int row = m.getRow();
+			int col = m.getCol();
+			mat_c[row][col] = m.getValue();
+		}
+	}
 	
 	public Work tellResultGetWork(MatrixElement me) {
 		int row = me.getRow();
@@ -69,11 +79,13 @@ public class Master {
 		switch(mode) {
 		
 		case 0:
+			System.out.println("Application is running in Master-Worker mode!");
 			createStartWorker();
 			waitAndPrintResult(); 
 			break;
 		
 		case 1:
+			System.out.println("Application is running in Parallelism mode!");
 			manageParallel();
 			waitAndPrintResult(); 
 			break;
@@ -85,8 +97,7 @@ public class Master {
 	public void manageParallel() {
 		int workPerThread = Math.floorDiv(work.size(),numberThreads);
 		int restWork = (work.size()%numberThreads);
-		createStartWorker(workPerThread,restWork);
-		System.out.println(workPerThread + " " + restWork + " " + work.size());
+		createStartParallel(workPerThread,restWork);
 	}
 	
 	public void createWork() {
@@ -97,25 +108,25 @@ public class Master {
 		}
 	}
 	
-	public void createStartWorker(int workPerThread, int restWork) {	
+	public void createStartParallel(int workPerThread, int restWork) {	
 		int rest = restWork;
+		Worker worker;
 		for (int amount = 0; amount < numberThreads; amount++) {
-			if (!work.isEmpty()) {
-				Worker w; 
-				if (rest != 0) {
-					w = new Worker(work.pop(),this,workPerThread+1);
-					rest--;
-				}
-				else
-					w = new Worker(work.pop(),this,workPerThread);
-				w.start();
-				workers.add(w);
+			Stack<Work> workForThread = new Stack<>();
+			for (int i = 0; i < workPerThread; i++) {
+				workForThread.push(work.pop());
 			}
+			if (rest != 0) {
+				workForThread.push(work.pop());
+				rest--;
+			}
+		worker = new Worker(this,workForThread);
+		worker.start();
+		workers.add(worker);
 		}
 	}
 	
 	public void createStartWorker() {	
-
 		for (int amount = 0; amount < numberThreads; amount++) {
 			if (!work.isEmpty()) {
 				Worker w = new Worker(work.pop(),this);

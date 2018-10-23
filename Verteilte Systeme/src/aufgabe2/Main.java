@@ -1,6 +1,5 @@
 package aufgabe2;
 
-import java.awt.Desktop;
 import java.util.Scanner;
 
 public class Main {
@@ -13,6 +12,7 @@ public class Main {
 		int mode = parseStrToInt(s.next());
 		System.out.println("Please enter the amount of threads:");
 		int threads = parseStrToInt(s.next());
+		s.close();
 		threads = (threads == 0) ? Runtime.getRuntime().availableProcessors() : threads; 
 		
 		master = new Master(mode,threads);
