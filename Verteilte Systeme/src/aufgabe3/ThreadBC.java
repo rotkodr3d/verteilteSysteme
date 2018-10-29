@@ -7,7 +7,7 @@ public class ThreadBC extends Thread {
 	private int k;
 	private static long result;
 	
-	Semaphore sem = new Semaphore(0);
+	Semaphore sem = new Semaphore(1);
 	
 	public static void main(String[] args) {
 		int nIn = Integer.parseInt(args[0]); 
@@ -39,14 +39,14 @@ public class ThreadBC extends Thread {
 	@Override
 	public void run() {	
 		if ((n == k) || (k == 0)) {
-			//sem.p();
+			sem.p();
             result += 1;
-            //sem.v();
+            sem.v();
 		}
 		else if (k == 1 || k == n-1) {
-			//sem.p();
+			sem.p();
 			result += n;
-			//sem.v();
+			sem.v();
 		}
 		
         else {

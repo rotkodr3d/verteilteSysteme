@@ -23,25 +23,20 @@ public class Worker extends Thread{
 		if (Worker.master == null)
 			Worker.master = master;
 		workStack = work;
-	}
-	
-	
-	public Worker(Work work, Master master) {
-		this.work = work;
-		if (Worker.master == null)
-			Worker.master = master;	
-	}
-	
+	}	
 	
 	@Override
 	public void run() {
-		if (!parallelism)
+		if (!parallelism) {
+			work = master.getWork();
 			while(work != null) {
 				calcTellResult();
 			}
-		else
+		}
+		else {
 			while(!workStack.isEmpty()) {
 				paralellism();
+			}
 		}
 	}
 	

@@ -29,7 +29,7 @@ public class Master {
 	
 	private int [][] mat_c = new int[n][m];
 	private int numberThreads = 25;
-	
+	private long start;
 	private int mode = 0; //0 = Master-Worker; 1 = Parallelismus
 	
 	private List<Worker> workers = new ArrayList<>(); 
@@ -73,19 +73,20 @@ public class Master {
 	}
 	
 	public Master(int mode, int threads) {
+		start = System.nanoTime();
 		numberThreads = threads; 
 		createWork();
 		mode = (mode != 0 && mode != 1) ? 0 : mode;
 		switch(mode) {
 		
 		case 0:
-			System.out.println("Application is running in Master-Worker mode!");
+			System.out.println("Program is running in Master-Worker mode!");
 			createStartWorker();
 			waitAndPrintResult(); 
 			break;
 		
 		case 1:
-			System.out.println("Application is running in Parallelism mode!");
+			System.out.println("Program is running in Parallelism mode!");
 			manageParallel();
 			waitAndPrintResult(); 
 			break;
@@ -114,22 +115,23 @@ public class Master {
 		for (int amount = 0; amount < numberThreads; amount++) {
 			Stack<Work> workForThread = new Stack<>();
 			for (int i = 0; i < workPerThread; i++) {
-				workForThread.push(work.pop());
+				if (!work.isEmpty())
+					workForThread.push(work.pop());
 			}
 			if (rest != 0) {
 				workForThread.push(work.pop());
 				rest--;
 			}
-		worker = new Worker(this,workForThread);
-		worker.start();
-		workers.add(worker);
+			worker = new Worker(this,workForThread);
+			worker.start();
+			workers.add(worker);
 		}
 	}
 	
 	public void createStartWorker() {	
 		for (int amount = 0; amount < numberThreads; amount++) {
 			if (!work.isEmpty()) {
-				Worker w = new Worker(work.pop(),this);
+				Worker w = new Worker(this);
 				w.start();
 				workers.add(w);
 			}
@@ -144,7 +146,7 @@ public class Master {
 				e.printStackTrace();
 			}
 		}
-
+		
 		for (int i = 0; i < mat_c.length; i++) {
 			System.out.print("[");
 			for(int j = 0; j < mat_c[i].length; j++) {
@@ -152,5 +154,7 @@ public class Master {
 			}
 			System.out.printf("%4s","]\n");
 		}
+		long end = System.nanoTime();
+		System.out.println("\nProgram finished after: " + ((end - start)/1000)+ " microseconds!");
 	}
 }

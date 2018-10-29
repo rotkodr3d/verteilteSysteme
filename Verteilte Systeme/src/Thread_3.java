@@ -13,8 +13,8 @@ public class Thread_3 extends Thread {
 	}
 	
 	public void run() {
-		sems[2].p();
+		sems[0].p();
 		activity_3();
-		sems[2].v();
+		sems[0].v();
 	}
 }

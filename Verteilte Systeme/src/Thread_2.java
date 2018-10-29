@@ -15,6 +15,7 @@ public class Thread_2 extends Thread{
 	public void run() {
 		sems[0].p();
 		activity_2();
-		sems[2].v();
+		//sems[2].v();
+		sems[0].v();
 	}
 }
