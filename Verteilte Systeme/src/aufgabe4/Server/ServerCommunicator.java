@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import aufgabe4.Reply;
 
 public class ServerCommunicator extends Thread{
 	
@@ -46,7 +47,14 @@ public class ServerCommunicator extends Thread{
 	
 	public void run() {
 		try {
-			
+			String mode = (String) in.readObject();
+			if (mode.equals("get")); { //Client möchte die Umfrage abfragen 
+				Reply reply = server.getSurveyData();
+				out.writeObject(reply);
+				out.flush();
+				incoming.close();
+			}
+				
 		} catch(Exception e) {
 			
 		}

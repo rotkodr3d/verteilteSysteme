@@ -9,6 +9,7 @@ import aufgabe4.SurveyAnswers;
 public class SurveyDataset implements Serializable {
 	
 	public HashMap<SurveyAnswers,Integer> votes;
+	public String surveyQuestion;
 	
 	public SurveyDataset() {
 		votes=new HashMap<>();
@@ -23,5 +24,9 @@ public class SurveyDataset implements Serializable {
 	
 	public void addVoteToAnswer(SurveyAnswers answer) {
 		votes.put(answer,votes.get(answer)+1); 
+	}
+	
+	public void setSurveyQuestion(String newQuestion) {
+		surveyQuestion = newQuestion;
 	}
 }
