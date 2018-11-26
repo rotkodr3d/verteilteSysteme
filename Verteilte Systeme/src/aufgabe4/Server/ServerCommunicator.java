@@ -48,12 +48,20 @@ public class ServerCommunicator extends Thread{
 	
 	public void run() {
 		try {
-			String mode = (String) in.readObject();
-			if (mode.equals("get")); { //Client möchte die Umfrage abfragen 
+			Reply clientReply = (Reply) in.readObject();
+			String message = clientReply.message;
+			int mode = clientReply.replyType;
+			if (mode == Reply.GETSURVEY) { 				//Client möchte die Umfrage abfragen 
 				Reply reply = server.getSurveyData();
 				out.writeObject(reply);
 				out.flush();
 				incoming.close();
+			} else if (mode == Reply.VOTE) {			//Client möchte an Umfrage teilnehmen, Server sendet Frage
+				Reply reply = server.voteSurvey();
+				out.writeObject(reply);
+				out.flush();
+			} else if (mode == Reply.VOTEANSWER) {		//Client hat Frage beantwortet und hat diese zum Server geschickt
+				server.countAnswer(message);
 			}
 				
 		} catch(Exception e) {

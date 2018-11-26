@@ -24,10 +24,10 @@ public class ClientCommunicator {
 		}
 	}
 	
-	public Reply communicate(String mode) {
+	public Reply communicate(Reply clientReply) {
 		Reply reply = null;
 		try {
-			out.writeObject(mode);
+			out.writeObject(clientReply);
 			reply = (Reply) in.readObject();
 		} catch (Exception e) {
 			e.printStackTrace();
