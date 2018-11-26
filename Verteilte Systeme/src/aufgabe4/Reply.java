@@ -14,6 +14,11 @@ public class Reply implements Serializable{
 		
 	}
 	
+	public Reply(String message, int replyType) {
+		this.message = message;
+		this.replyType = replyType;
+	}
+	
 	public Reply(String message) {
 		this.message = message;
 	}

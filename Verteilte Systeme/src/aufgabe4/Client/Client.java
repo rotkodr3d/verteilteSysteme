@@ -27,13 +27,14 @@ public class Client {
 			SurveyQuestionReply surveyQuestion = (SurveyQuestionReply) reply;
 			System.out.println(surveyQuestion.surveyQuestion+"\n");
 			System.out.println("Please type in your answer to the above-mentioned question.\n" + 
-								"You have " + surveyQuestion.possibleAnswers.size() + "possible answers.");
+								"You have " + surveyQuestion.possibleAnswers.size() + " possible answers.");
 			System.out.println(surveyQuestion.possibleAnswers);
-			Scanner scanner = new Scanner(System.in);
-			String answer = scanner.next();
+			//Scanner scanner = new Scanner(System.in);
+			String answer = "agree";//scanner.next();
+			//scanner.close();
 			answer = answer.toUpperCase();
+			System.out.println("You answered: " + answer);
 			communicator.communicate(new Reply(answer));
-			scanner.close();
 		}
 	}
 	
