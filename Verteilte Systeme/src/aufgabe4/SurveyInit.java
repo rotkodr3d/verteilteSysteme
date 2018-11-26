@@ -12,7 +12,7 @@ public class SurveyInit {
 		sds.addAnswerToDataset(SurveyAnswers.AGREE, 0);
 		sds.addAnswerToDataset(SurveyAnswers.DISAGREE, 0);
 		sds.setSurveyQuestion("Should java support multiple inheritance?");
-		String fileName = "survey.txt";
+		String fileName = "surveyData.txt";
 	
 		try {
 			FileOutputStream fos = new FileOutputStream(fileName);
