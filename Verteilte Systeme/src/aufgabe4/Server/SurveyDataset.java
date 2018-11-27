@@ -8,6 +8,10 @@ import aufgabe4.SurveyAnswers;
 
 public class SurveyDataset implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public HashMap<SurveyAnswers,Integer> votes;
 	public String surveyQuestion;
 	
@@ -28,5 +32,9 @@ public class SurveyDataset implements Serializable {
 	
 	public void setSurveyQuestion(String newQuestion) {
 		surveyQuestion = newQuestion;
+	}
+	
+	public void updateVotesMap(HashMap<SurveyAnswers,Integer> updatedVotes) {
+		votes = updatedVotes;
 	}
 }

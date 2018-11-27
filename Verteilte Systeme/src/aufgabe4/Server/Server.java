@@ -1,13 +1,14 @@
 package aufgabe4.Server;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
 import aufgabe4.Reply;
 import aufgabe4.SurveyAnswers;
 import aufgabe4.SurveyStatusReply;
-import aufgabe4.SurveyVoteReply;
 
 public class Server {
 	
@@ -34,7 +35,14 @@ public class Server {
 				int counts = votes.get(key);
 				counts += 1;
 				votes.put(key, counts);
+				System.out.println(key + " " + votes.get(key));
 				reply = new Reply("Thank you for participating the survey!");
+				FileOutputStream fos = new FileOutputStream(fileName);
+				ObjectOutputStream oos = new ObjectOutputStream(fos);
+				sd.updateVotesMap(votes);
+				oos.writeObject(sd);
+				oos.flush();
+				oos.close();
 				break;
 			}
 		} catch (Exception e) {
