@@ -35,6 +35,16 @@ public class ClientCommunicator {
 		
 		return reply;
 	}
+	
+	public void communicateWithoutReply(Reply clientReply) {
+		Reply reply = null;
+		try {
+			out.writeObject(clientReply);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	public void stop() {
 		try {

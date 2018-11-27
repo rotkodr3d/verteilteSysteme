@@ -13,15 +13,16 @@ public class Client {
 	
 	private void handleReply(Reply reply) {
 		//Prüfen welches Reply vom Server zurück kam
-		if (reply.replyType == Reply.GETSURVEY) { 				//Reply ist der Status der Umfrage
-			System.out.println("People have answered: ");
-			SurveyStatusReply surveyStatus = ((SurveyStatusReply) reply);
-			HashMap<?,?> votes = surveyStatus.votesReply;
-			
-			for (Entry<?,?> entry : votes.entrySet()) {
-				System.out.println(entry.getKey() + " " + entry.getValue());
+		if (reply != null)		
+			if (reply.replyType == Reply.GETSURVEY) { 				//Reply ist der Status der Umfrage
+				System.out.println("People have answered: ");
+				SurveyStatusReply surveyStatus = ((SurveyStatusReply) reply);
+				HashMap<?,?> votes = surveyStatus.votesReply;
+				
+				for (Entry<?,?> entry : votes.entrySet()) {
+					System.out.println(entry.getKey() + " " + entry.getValue());
+				}
 			}
-		}
 	}
 	
 	public Client(String[] arguments) {
@@ -37,7 +38,8 @@ public class Client {
 			String answer = s.next();
 			answer = answer.toUpperCase();
 			s.close();
-			reply = communicator.communicate(new Reply(answer,Reply.VOTEANSWER));
+			//communicator.communicateWithoutReply(new Reply(answer,Reply.VOTEANSWER));
+			communicator.communicate(new Reply(answer,Reply.VOTEANSWER));
 		}
 		handleReply(reply);
 	}
