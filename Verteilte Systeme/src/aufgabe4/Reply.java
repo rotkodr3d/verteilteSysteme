@@ -5,8 +5,7 @@ import java.util.HashMap;
 
 public class Reply implements Serializable{
 	public final static int GETSURVEY = 0;
-	public final static int VOTE = 1;
-	public final static int VOTEANSWER = 2;
+	public final static int VOTEANSWER = 1;
 	public int replyType;
 	public String message; //Fügt Möglichkeit hinzu nur einen String als Antwort zu senden 
 	

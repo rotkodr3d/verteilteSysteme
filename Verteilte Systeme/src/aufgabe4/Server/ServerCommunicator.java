@@ -23,7 +23,6 @@ public class ServerCommunicator extends Thread{
 			serverSocket = new ServerSocket(PORT);
 			System.out.println("ServerCommunicator waiting for clients...");
 			server = new Server();
-			
 			while (true) {
 				Socket incoming = serverSocket.accept();
 				ServerCommunicator communicator = new ServerCommunicator(incoming);
@@ -51,24 +50,25 @@ public class ServerCommunicator extends Thread{
 			Reply clientReply = (Reply) in.readObject();
 			String message = clientReply.message;
 			int mode = clientReply.replyType;
+			System.out.println(mode + " " + message);
 			Reply reply;
-			if (mode == Reply.GETSURVEY) { 				//Client möchte die Umfrage abfragen 
+			if (mode == Reply.GETSURVEY) { // Client möchte die Umfrage abfragen
 				reply = server.getSurveyData();
 				out.writeObject(reply);
 				out.flush();
 				incoming.close();
-			} else if (mode == Reply.VOTE) {			//Client möchte an Umfrage teilnehmen, Server sendet Frage
-				reply = server.voteSurvey();
-				out.writeObject(reply);
-				out.flush();
-			} else if (mode == Reply.VOTEANSWER) {		//Client hat Frage beantwortet und hat diese zum Server geschickt
+			} else if (mode == Reply.VOTEANSWER) { // Client hat Frage beantwortet und hat diese zum Server geschickt
 				reply = server.countAnswer(message);
 				out.writeObject(reply);
+				out.flush();
 				incoming.close();
+			} else {
+				System.err.println("ERROR!!!");
+				;
 			}
-				
-		} catch(Exception e) {
-			
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

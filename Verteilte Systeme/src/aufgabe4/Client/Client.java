@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 
 import aufgabe4.Reply;
-import aufgabe4.SurveyQuestionReply;
 import aufgabe4.SurveyStatusReply;
 import aufgabe4.SurveyVoteReply;
 
@@ -23,19 +22,6 @@ public class Client {
 				System.out.println(entry.getKey() + " " + entry.getValue());
 			}
 		}
-		else if (reply.replyType == Reply.VOTE) {				//Reply ist die Frage der Umfrage, sowie die Antwortmöglichkeiten
-			SurveyQuestionReply surveyQuestion = (SurveyQuestionReply) reply;
-			System.out.println(surveyQuestion.surveyQuestion+"\n");
-			System.out.println("Please type in your answer to the above-mentioned question.\n" + 
-								"You have " + surveyQuestion.possibleAnswers.size() + " possible answers.");
-			System.out.println(surveyQuestion.possibleAnswers);
-			//Scanner scanner = new Scanner(System.in);
-			String answer = "agree";//scanner.next();
-			//scanner.close();
-			answer = answer.toUpperCase();
-			System.out.println("You answered: " + answer);
-			communicator.communicate(new Reply(answer));
-		}
 	}
 	
 	public Client(String[] arguments) {
@@ -45,8 +31,14 @@ public class Client {
 		Reply reply = null;
 		if (mode.equals("get"))
 			reply = communicator.communicate(new Reply(Reply.GETSURVEY));
-		else if (mode.equals("vote"))
-			reply = communicator.communicate(new Reply(Reply.VOTE));
+		else if (mode.equals("vote")) {
+			System.out.println("Should java support multiple inheritance?");
+			Scanner s = new Scanner(System.in);
+			String answer = s.next();
+			answer = answer.toUpperCase();
+			s.close();
+			reply = communicator.communicate(new Reply(answer,Reply.VOTEANSWER));
+		}
 		handleReply(reply);
 	}
 	

@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import aufgabe4.Reply;
 import aufgabe4.SurveyAnswers;
-import aufgabe4.SurveyQuestionReply;
 import aufgabe4.SurveyStatusReply;
 import aufgabe4.SurveyVoteReply;
 
@@ -35,31 +34,12 @@ public class Server {
 				int counts = votes.get(key);
 				counts += 1;
 				votes.put(key, counts);
+				reply = new Reply("Thank you for participating the survey!");
 				break;
 			}
 		} catch (Exception e) {
 				e.printStackTrace();
 			}
-		return null;
-	}
-	
-	public Reply voteSurvey() {
-		System.out.println("Called method voteSuvrey()");
-		try {
-			fis = new FileInputStream(fileName);
-			ois = new ObjectInputStream(fis);
-			while(true) {
-				sd = (SurveyDataset) ois.readObject();
-				ois.close();
-				fis.close();
-				reply = new SurveyQuestionReply(sd.surveyQuestion);
-				break;
-			}
-		} catch (Exception e) {
-				e.printStackTrace();
-			}
-		
-		System.out.println("Returning reply object");
 		return reply;
 	}
 	
@@ -79,8 +59,6 @@ public class Server {
 		} catch (Exception e) {
 				e.printStackTrace();
 			}
-		
-		System.out.println("Returning reply object");
 		return reply;
 		}
 }
