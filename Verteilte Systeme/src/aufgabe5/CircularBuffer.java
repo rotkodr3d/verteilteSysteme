@@ -16,6 +16,10 @@ public class CircularBuffer<T> {
 		return size;
 	}
 	
+	public int getAmountOfEntries() {
+		return in-1;
+	}
+	
 	private int wrapIndex(int i) {
 		int m = i % size;
 	    if (m < 0) { 
