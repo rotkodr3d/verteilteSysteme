@@ -13,4 +13,8 @@ public class Reply<T> implements Serializable{
 	public Reply(T replyContent) {
 		this.replyContent = replyContent;
 	}
+	
+	public T getReplyContent() {
+		return replyContent;
+	}
 }

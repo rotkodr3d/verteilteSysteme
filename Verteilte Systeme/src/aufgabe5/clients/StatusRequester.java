@@ -5,13 +5,15 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Scanner;
+
+import aufgabe5.Reply;
 import aufgabe5.server.ServerInterface;
 
-public class Producer {
+public class StatusRequester {
 	private ServerInterface<String> server; // It is assumed that you know the object type of the server
 
 	@SuppressWarnings("unchecked")
-	public Producer(String param1) {
+	public StatusRequester(String param1) {
 		try {
 			server = (ServerInterface<String>) Naming.lookup("rmi://" + param1 + "/ServerInterface");
 		} catch (MalformedURLException | RemoteException | NotBoundException e) {
@@ -19,30 +21,37 @@ public class Producer {
 		}
 	}
 
+	private void handleReply(Reply<?> reply) {
+		System.out.println(reply.getReplyContent());
+	}
+
 	public static void main(String[] args) {
 		Scanner s = new Scanner(System.in);
+		System.out.println("StatusRequester started!");
 		System.out.println("Please enter the host address:");
 		String param1 = s.nextLine();
-		s.close();
 
-		if (param1.replace("\\s+", "").isEmpty()) {
+		if (param1.replaceAll("\\s+", "").isEmpty()) {
 			System.err.println("Invalid input!");
 			System.exit(1);
 		}
 
-		Producer p = new Producer(param1);
-		p.produce();
+		StatusRequester sr = new StatusRequester(param1);
+		System.out.println(
+		        "If you want the size of the buffer type 'size'" + " If you want the number of entries type 'entries'");
+		String mode = s.next();
+		s.close();
+		sr.getStatusOfBuffer(mode);
 	}
 
-	private void produce() {
+	private void getStatusOfBuffer(String mode) {
 		try {
-			int number = 0;
-			while (true) {
-				number = (int) (Math.random() * 1000);
-				server.addToBuffer("Producer will wait " + number + " ms");
-				System.out.println("Producer will wait " + number + " ms");
-				Thread.sleep(number);
-			}
+			Reply<?> reply = null;
+			if (mode.equals("size"))
+				reply = server.getBufferSize();
+			else if (mode.equals("entries"))
+				reply = server.getAmountOfBufferEntries();
+			handleReply(reply);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
