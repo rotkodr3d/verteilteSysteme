@@ -1,6 +1,9 @@
 package aufgabe7.andereLösung;
 
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.Properties;
+import java.util.Scanner;
 
 import javax.jms.JMSException;
 import javax.jms.Queue;
@@ -15,6 +18,9 @@ import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import aufgabe4.Reply;
+import aufgabe4.Server.SurveyDataset;
 
 public class Client {
 	private static final String DESTINATION = "queue/myQueue1";
@@ -34,6 +40,7 @@ public class Client {
 		Context ctx = new InitialContext(props);
 		factory = (QueueConnectionFactory) ctx.lookup("ConnectionFactory");
 		queue = (Queue) ctx.lookup(DESTINATION);
+		System.out.println("Client7 initialized!");
 	}
 	
 	public void process() throws JMSException{
@@ -69,8 +76,11 @@ public class Client {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		String text = args[0];
+		//String text = args[0];
+		Scanner scanner = new Scanner(System.in);
+		String text = scanner.nextLine();
 		Client client = new Client(text);
 		client.process();
+		scanner.close();
 	}
 }
